@@ -26,10 +26,13 @@
 ```text
 antigravity-agent-rules/
 ├── rules/
-│   ├── GEMINI.md                    # 全局硬性基线规则（极简回答、直言进谏、批斗准则、Git控制、环境防灾）
+│   ├── GEMINI.md                    # 全局硬性基线规则（极简回答、直言进谏、批斗准则、开源交付红线、Git控制）
 │   ├── discipline.md                # 智能体纪律守则（极简交付、敢于进谏、两击即停红线、过程自然简报）
-│   └── github-publishing.md         # GitHub 仓库发布与分类标签（Topics）规范
+│   ├── github-publishing.md         # GitHub 仓库发布与分类标签（Topics）规范
+│   └── oss-contribution.md          # 开源贡献与 PR 交付硬性红线（防死代码、跨平台对齐、防 AI 垃圾）
 ├── skills/
+│   ├── android-fast-automation/     # Android 极速自动化与移动网络诊断技能 (Python Socket 直连 5037)
+│   │   └── SKILL.md
 │   ├── pd/                          # 批斗模式技能主目录 (/pd 别名)
 │   │   ├── SKILL.md                 # 全周期自适应批斗模式技能定义
 │   │   └── references/
@@ -39,6 +42,7 @@ antigravity-agent-rules/
 │       └── references/
 │           └── prompts.md
 └── scripts/
+    ├── install.bat                  # Windows 批处理一键安装（双击直达）
     ├── install.ps1                  # Windows PowerShell 一键部署脚本
     └── install.sh                   # Linux/macOS Bash 一键部署脚本
 ```
@@ -129,14 +133,34 @@ flowchart TD
 
 ---
 
+## 五、 开源贡献与 PR 交付红线 (`rules/oss-contribution.md`)
+为开源项目提交流程与代码补丁时的六大红线：
+1. **绝不提交不可达架子代码**：新增代码必须有真实业务消费者，禁止仅在测试中被调用的纯模型；
+2. **严防 Windows 宿主偏见**：杜绝反斜杠与驱动器号假象，显式在 POSIX / Linux / macOS 下边界对齐；
+3. **凭据安全防御**：敏感字段 Debug 输出强制脱敏为 `<redacted>`，序列化强制跳过；
+4. **拒绝脆弱正则修补**：复杂语法结构基于 AST 或词法状态机解析，严禁暴力正则全局替换；
+5. **反 AI 垃圾与八股**：严格遵守 upstream CONTRIBUTING 规范，PR 说明直击要害，杜绝套话。
+
+---
+
+## 六、 Android 极速自动化与网络诊断 (`skills/android-fast-automation/`)
+面向 Android 移动端测试与网络调试的工业级技能库：
+- **极速触控与截图**：基于 Python 原生 Socket 直连 `127.0.0.1:5037`，触控延迟 46 毫秒，内存二进制直读截图 330 毫秒（彻底杜绝 PowerShell 编码污染）；
+- **移动网络诊断栈**：区分应用层直连与系统 TUN 虚拟网卡假死，支持 Deep Link 意图直通及 Android 15 eBPF 兼容性排障。
+
+---
+
 ## 🚀 快速安装与使用
 
 ### 1. 克隆并安装到当前设备
 
-#### Windows (PowerShell)
+#### Windows
 ```powershell
 git clone https://github.com/cf3901646/antigravity-agent-rules.git
 cd antigravity-agent-rules
+
+# 方式一：直接双击运行 scripts\install.bat
+# 方式二：PowerShell 执行
 .\scripts\install.ps1
 ```
 
