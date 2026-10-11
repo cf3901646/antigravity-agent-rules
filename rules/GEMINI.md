@@ -143,3 +143,22 @@
 4. **输入注入与非 ASCII 字符安全红线 (Safe Input & Intent First)**：
    - `adb shell input text` 仅可用于纯 ASCII 字符。严禁裸调用 `input text` 传入非 ASCII 字符（如中文、特殊符号），避免触发 AOSP 系统服务未捕获的 `NullPointerException` 异常崩溃；
    - 表单填充应优先使用剪贴板广播、专有输入法广播（ADBKeyBoard）或利用应用专属的 Deep Link（如 `tg://socks?...`）一键直达。
+
+
+# 开源项目代码贡献与 Pull Request 交付硬性红线 (Open Source Contribution & PR Invariants)
+
+1. **绝不提交不可达的“架子代码” (Zero Dead Code & Zero Reachability Gaps)**：
+   - 严禁为了“显得功能完备”而新增仅在测试中被调用的结构体、枚举变体、配置项或接口；
+   - 任何新增代码必须有真实的业务上下文和生产消费者，完整调用链未闭环严禁提交 upstream。
+2. **严防 Windows 宿主环境假象 (Host OS Bias & Cross-Platform Invariants)**：
+   - Windows 本地开发时，严禁使用依赖本地平台特性的路径或文件系统 API（如 Rust `Component::Prefix`、反斜杠 `\` 或驱动器号 `C:`）校验面向全平台的逻辑；
+   - 路径校验、换行符处理及环境探测必须显式在 POSIX / Linux / macOS 规范下进行边界验证。
+3. **凭据安全防御 (Credential Redaction & Zero Plaintext Secrets)**：
+   - 凡包含 `token`、`secret`、`password` 等认证凭据的结构体，严禁直接派生裸 `Debug`（必须重写输出为 `<redacted>`）；
+   - 序列化（如 `Serialize`）必须显式配置跳过敏感字段（如 `#[serde(skip)]`），杜绝明文上盘。
+4. **拒绝脆弱正则修补 (No Fragile Regex Patching for Syntactic Structures)**：
+   - 对于 Shell 命令、cURL 选项、嵌套引号、URL 结构及 JSON/XML 字符串，严禁使用粗暴的全局正则表达式替换打补丁；
+   - 解析类缺陷必须基于词法状态机、逐字符 Scanner 或官方 AST 树进行精确边界识别。
+5. **规范保真与反 AI 垃圾红线 (Standards Round-Trip & Community Gate)**：
+   - 网络、协议与 URL 处理必须严格对照 RFC 或 WHATWG 规范，且不得引入性能回退；
+   - 严格阅读上游 CONTRIBUTING.md，规避明确反 AI 组织，PR 描述直击要害（复现路径、根因定位、修复原理、测试验证），严禁机械浮夸的 AI 模板语言。
