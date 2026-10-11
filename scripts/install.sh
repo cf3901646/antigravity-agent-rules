@@ -4,18 +4,22 @@
 set -e
 
 GEMINI_DIR="$HOME/.gemini"
-CONFIG_RULES_DIR="$GEMINI_DIR/config/rules"
-CONFIG_SKILLS_DIR="$GEMINI_DIR/config/skills"
+CONFIG_DIR="$GEMINI_DIR/config"
+CONFIG_RULES_DIR="$CONFIG_DIR/rules"
+CONFIG_SKILLS_DIR="$CONFIG_DIR/skills"
 SOURCE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 echo "==> 开始安装 Antigravity 规则与技能套件..."
 
+mkdir -p "$CONFIG_DIR"
 mkdir -p "$CONFIG_RULES_DIR"
 mkdir -p "$CONFIG_SKILLS_DIR"
 
-# 1. 安装全局硬性基线规则 GEMINI.md
+# 1. 安装全局硬性基线规则 GEMINI.md (双重写入保障兼容)
 if [ -f "$SOURCE_ROOT/rules/GEMINI.md" ]; then
+    cp -f "$SOURCE_ROOT/rules/GEMINI.md" "$CONFIG_DIR/GEMINI.md"
     cp -f "$SOURCE_ROOT/rules/GEMINI.md" "$GEMINI_DIR/GEMINI.md"
+    echo "[OK] 已部署全局基线规则 -> $CONFIG_DIR/GEMINI.md"
     echo "[OK] 已部署全局基线规则 -> $GEMINI_DIR/GEMINI.md"
 fi
 

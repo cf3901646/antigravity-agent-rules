@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     将规则与技能一键部署安装至当前用户的 Antigravity / Gemini 配置目录 (~/.gemini)
 #>
@@ -6,22 +6,28 @@
 $ErrorActionPreference = "Stop"
 
 $GeminiDir = Join-Path $HOME ".gemini"
-$ConfigRulesDir = Join-Path $GeminiDir "config\rules"
-$ConfigSkillsDir = Join-Path $GeminiDir "config\skills"
+$ConfigDir = Join-Path $GeminiDir "config"
+$ConfigRulesDir = Join-Path $ConfigDir "rules"
+$ConfigSkillsDir = Join-Path $ConfigDir "skills"
 $SourceRoot = Split-Path -Parent $PSScriptRoot
 
 Write-Host "==> 开始安装 Antigravity 规则与技能套件..." -ForegroundColor Cyan
 
 # 确保目标目录存在
+New-Item -ItemType Directory -Force -Path $ConfigDir | Out-Null
 New-Item -ItemType Directory -Force -Path $ConfigRulesDir | Out-Null
 New-Item -ItemType Directory -Force -Path $ConfigSkillsDir | Out-Null
 
-# 1. 安装全局硬性基线规则 GEMINI.md
+# 1. 安装全局硬性基线规则 GEMINI.md (同时写入 config 目录与根目录以实现全面兼容)
 $SourceGeminiMd = Join-Path $SourceRoot "rules\GEMINI.md"
-$DestGeminiMd = Join-Path $GeminiDir "GEMINI.md"
+$DestConfigGeminiMd = Join-Path $ConfigDir "GEMINI.md"
+$DestRootGeminiMd = Join-Path $GeminiDir "GEMINI.md"
+
 if (Test-Path $SourceGeminiMd) {
-    Copy-Item -Path $SourceGeminiMd -Destination $DestGeminiMd -Force
-    Write-Host "[OK] 已部署全局基线规则 -> $DestGeminiMd" -ForegroundColor Green
+    Copy-Item -Path $SourceGeminiMd -Destination $DestConfigGeminiMd -Force
+    Copy-Item -Path $SourceGeminiMd -Destination $DestRootGeminiMd -Force
+    Write-Host "[OK] 已部署全局基线规则 -> $DestConfigGeminiMd" -ForegroundColor Green
+    Write-Host "[OK] 已部署全局基线规则 -> $DestRootGeminiMd" -ForegroundColor Green
 }
 
 # 2. 安装场景化规约 (rules/*.md)
