@@ -44,7 +44,10 @@ foreach ($rule in $RuleFiles) {
 $SkillDirs = Get-ChildItem -Path (Join-Path $SourceRoot "skills") -Directory
 foreach ($sDir in $SkillDirs) {
     $dest = Join-Path $ConfigSkillsDir $sDir.Name
-    Copy-Item -Path $sDir.FullName -Destination $dest -Recurse -Force
+    if (Test-Path $dest) {
+        Remove-Item -Path $dest -Recurse -Force
+    }
+    Copy-Item -Path $sDir.FullName -Destination $ConfigSkillsDir -Recurse -Force
     Write-Host "[OK] 已部署技能插件 -> $dest" -ForegroundColor Green
 }
 

@@ -36,6 +36,7 @@ done
 for sDir in "$SOURCE_ROOT/skills"/*; do
     if [ -d "$sDir" ]; then
         base=$(basename "$sDir")
+        rm -rf "$CONFIG_SKILLS_DIR/$base"
         cp -rf "$sDir" "$CONFIG_SKILLS_DIR/"
         echo "[OK] 已部署技能插件 -> $CONFIG_SKILLS_DIR/$base"
     fi
