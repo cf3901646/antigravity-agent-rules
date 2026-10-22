@@ -94,3 +94,6 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
 5. **Win32-OpenSSH ACL 锁死与 1067 防崩溃法则**：
    - Windows OpenSSH 服务启动强依赖主机私钥与 `logs` 目录权限纯净度。私钥与鉴权文件必须显式阻断继承，仅保留 `SYSTEM:F` 与 `Administrators:F`，严禁遗留任何个别用户或未白名单私钥的权限，彻底杜绝服务 1067 异常崩溃。
 
+6. **规则沉淀自愈闭环（Rules Auto-Push Guardrail）**：
+   - 智能体在执行 `/learn` 或更新规则与技能配置时，流程终点必须包含向 `cf3901646/antigravity-agent-rules` 仓库的提交与推送动作，未完成远程推送严禁宣告学习闭环。
+

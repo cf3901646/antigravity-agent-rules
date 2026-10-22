@@ -66,6 +66,10 @@
    - 严格避免提交敏感信息及不必要的构建生成物（遵循 `.gitignore`）。
 4. **版本控制与备份纯粹性**：
    - 修改代码与文件统一通过 Git 进行版本控制与变更记录，**严禁额外生成物理备份文件**（如 `*.bak`, `*.copy`, `*.old` 等）。
+5. **全局规则与技能变更强制同步 GitHub (Rules & Skills Auto-Sync)**：
+   - 凡是在本地（如 `~/.gemini/config/`）新增、更新或优化规则（Rules）或技能（Skills），在本地落地验证完成后，**必须立即同步至规则专属仓库 `cf3901646/antigravity-agent-rules`**；
+   - 自动执行闭环：同步至本地仓库工作树 -> 规范暂存与提交（Conventional Commits，如 `feat(rules): ...`） -> 推送至 GitHub（`git push origin main`）；
+   - 严禁出现规则仅在本地单点生效而未向 GitHub 远程同步沉淀的情况，确保规则跨端多环境自愈演进。
 
 
 # Windows 脚本与平台硬性规约 (.bat / .ps1 & Platform Invariants)
