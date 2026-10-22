@@ -36,14 +36,18 @@ antigravity-agent-rules/
 ├── skills/
 │   ├── android-fast-automation/     # Android 极速自动化与移动网络诊断技能 (Python Socket 直连 5037)
 │   │   └── SKILL.md
+│   ├── artemis-mobile-agent/        # Google Artemis 多模态 Android 端到端自动化操作 Agent
+│   │   └── SKILL.md
 │   ├── pd/                          # 批斗模式技能主目录 (/pd 别名)
 │   │   ├── SKILL.md                 # 全周期自适应批斗模式技能定义
 │   │   └── references/
 │   │       └── prompts.md           # 辩论与整风全角色 Prompt 模板库
-│   └── pidou/                       # 批斗模式双向兼容镜像目录 (/pidou 别名)
-│       ├── SKILL.md
-│       └── references/
-│           └── prompts.md
+│   ├── pidou/                       # 批斗模式双向兼容镜像目录 (/pidou 别名)
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── prompts.md
+│   └── rea-reverse-engineering/     # REA 逆向工程与软件分析 Agent 工具链 (APK/JS/二进制分析)
+│       └── SKILL.md
 └── scripts/
     ├── install.bat                  # Windows 批处理一键安装（双击直达）
     ├── install.ps1                  # Windows PowerShell 一键部署脚本

@@ -68,11 +68,18 @@
    - 修改代码与文件统一通过 Git 进行版本控制与变更记录，**严禁额外生成物理备份文件**（如 `*.bak`, `*.copy`, `*.old` 等）。
 
 
-# Windows 批处理与平台规约 (.bat Scripts & Windows Invariants)
+# Windows 脚本与平台硬性规约 (.bat / .ps1 & Platform Invariants)
 
-1. **换行符约束**：编写或修改 Windows 批处理脚本（.bat）时，严禁使用 Unix 换行（必须使用 CRLF）。
-2. **编码防乱码**：脚本命令与路径严禁包含易导致 CMD 乱码崩溃的 UTF-8 多字节中文（中文提示与业务逻辑由 Python 等脚本负责）。
-3. **防闪退设计**：脚本末尾必须包含 `pause` 确保控制台常开，严禁闪退。
+1. **换行符与格式约束**：
+   - 编写或修改 Windows 批处理脚本（.bat）与 PowerShell 脚本（.ps1）时，必须严格使用 CRLF 换行，严禁 Unix LF 换行。
+2. **PowerShell 5.1 纯 ASCII 防线（防乱码与语法崩溃）**：
+   - Windows PowerShell 5.1 默认以系统本地代码页（如 GBK/CP936）读取无 BOM 脚本；
+   - 编写供宿主或用户执行的 `.ps1` 脚本时，必须遵循**纯 ASCII 原则**（命令、注释与输出文本严禁包含 UTF-8 多字节中文，防止引号吞噬、花括号错位等 ParserError 语法硬崩溃）；若必须输出中文，必须由 Python 脚本负责或显式存储为带 BOM 的 UTF-8。
+3. **复合脚本交付前 AST 语法自检**：
+   - 生成复合 `.ps1` 脚本交付用户前，智能体必须在后台先跑语法分析校验（如 `[System.Management.Automation.Language.Parser]::ParseFile`），确保 `Errors: 0` 方可交付。
+4. **防闪退与 UAC 提权感知设计**：
+   - 批处理脚本末尾必须包含 `pause` 确保控制台常开，严禁闪退；
+   - 智能体后台沙箱处于非交互式 Session，严禁盲目尝试 `Start-Process -Verb RunAs`（必然报 `The request is not supported`）；涉及系统驱动与服务操作时，必须生成带 UAC 唤起的批处理入口，引导用户在物理桌面提权。
 
 
 # GitHub 仓库发布与分类标签规约 (GitHub Publishing & Topics Invariants)

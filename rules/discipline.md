@@ -63,3 +63,34 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
      3. **下一步动作**：重新推导出的解法与正在执行的动作；
    - 严禁让用户陷入超过 2 分钟的信息静默期。
 4. **收工总结**：任务闭环完成后，简明汇报最终结果与验证事实，供用户验收。
+
+---
+
+## 五、 命令执行防挂起与确定性看门狗守则（Zero-Stdin & Deterministic Watchdog）
+
+在调用命令执行工具（如 `run_command`）与后台任务调度时，严格遵守以下防假死硬性规约：
+
+1. **绝对切断交互式输入（Zero-Stdin by Default）**：
+   - 所有 CLI 命令必须显式注入非交互环境变量与空输入重定向，严禁悬空等待 Stdin：
+     `$env:GIT_TERMINAL_PROMPT='0'; $env:GH_NO_PROMPT='1'; $env:CI='true'; $env:PIP_NO_INPUT='1'; $null | <command>`
+   - 严禁在 PowerShell 双引号字符串中直接使用未转义的 `$input`、`$var` 等包含管道枚举语义的内置变量，防止外层宿主在变量求值阶段发生死锁；多语言复合脚本必须使用 Base64 解码或独立脚本文件执行。
+
+2. **最大化同步执行窗口（Max Synchronous Window）**：
+   - 常规查询（git 状态、API 调取、文件检索等）必须将 `WaitMsBeforeAsync` 设置为 **5000 至 8000 毫秒**；
+   - 严禁滥用 500ms 盲目将常规命令推入后台，最大化在当前轮次内直接闭环。
+
+3. **`TimerCondition="never"` 确定性主动探测看门狗**：
+   - 当命令确实转入后台运行（异步任务）时，同轮**必须**使用 `schedule` 创建 60 秒的看门狗定时器：
+     `schedule(DurationSeconds=60, TimerCondition="never", Prompt="[WATCHDOG_PROBE] task-ID")`
+   - **严禁**使用任务绑定早夭条件（`TimerCondition="task-id"`），彻底阻断中间流式日志导致看门狗意外解绑失效；
+   - **完工主动注销**：后台任务正常结束时，智能体在处理退出消息时必须首先调用 `manage_task(Action='kill', TaskId=WatchdogID)` 销毁看门狗定时器，防止产生幽灵消息打断；
+   - **状态机精准熔断**：看门狗唤醒后，立即调用 `manage_task(Action='status')` 检查任务状态：
+     - 若 `Last progress < 60s`（健康长任务）：向用户输出 1 句进展汇报并续订下一个 60 秒定时器；
+     - 若 `Last progress >= 60s` 或 `never`（0 字节产出僵死）：**立即调用 `manage_task(Action='kill')` 强杀僵死任务**，主动换道重推并向用户汇报。
+
+4. **PowerShell 命令行内联变量防脱落**：
+   - 在调用 `run_command` 执行 PowerShell 时，严禁在外层双引号中使用 `$_.property` 或未转义的 `$var`（防止外层求值提前剥离变量导致指令语法硬报错）；包含管道枚举或多变量的逻辑，一律落盘为独立脚本文件执行，或外层全量包裹单引号。
+
+5. **Win32-OpenSSH ACL 锁死与 1067 防崩溃法则**：
+   - Windows OpenSSH 服务启动强依赖主机私钥与 `logs` 目录权限纯净度。私钥与鉴权文件必须显式阻断继承，仅保留 `SYSTEM:F` 与 `Administrators:F`，严禁遗留任何个别用户或未白名单私钥的权限，彻底杜绝服务 1067 异常崩溃。
+
