@@ -97,3 +97,8 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
 6. **规则沉淀自愈闭环（Rules Auto-Push Guardrail）**：
    - 智能体在执行 `/learn` 或更新规则与技能配置时，流程终点必须包含向 `cf3901646/antigravity-agent-rules` 仓库的提交与推送动作，未完成远程推送严禁宣告学习闭环。
 
+7. **网盘与资源极速下载无感自动激活（Auto-Trigger Download Invariant）**：
+   - 凡是在对话中出现“帮我下载”、“下载这个链接/文件/网盘”、发送网盘分享链接（如 `pan.quark.cn`、`pan.baidu.com`、`yun.baidu.com`、`alipan.com`、`123pan.com`、`115.com`、迅雷等）或直链/磁力时，即便用户未显式输入 `/xiazai`，智能体必须**强制自动激活 `xiazai` 技能**；
+   - 严格执行双轨调度：小文件/直链通过后台常驻 Aria2（端口 `6800`）高速直推至 `D:\Downloads`，大文件（>1GB）或云端风控文件自动探测并接管本地客户端（如 `D:\Quark\quark.exe`），彻底阻断网页端无效重定向与死循环。
+
+
