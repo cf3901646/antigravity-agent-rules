@@ -110,6 +110,13 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
 
 ---
 
+9. **自动化沙箱独立持久化 Profile 机制 (Isolated Persistent Browser Sandbox Profile Invariant)**：
+   - **主配置永久归档**：将用户在内置沙箱环境中完成认证的 Cookies 与 Storage 永久存储于 C:\Users\Administrator\.gemini\browser_profiles\master_authenticated_profile，杜绝跨会话自动销毁；
+   - **多分区自动热注入**：在启动全新沙箱或跨会话执行浏览器自动化时，自动调用 C:\Users\Administrator\.gemini\config\scripts\sync_browser_profile.py 脚本，将主凭据（如知网、Google 凭据）无缝热注入至当前活跃分区（如 hub-browser-09f95a4c、hub-browser-anonymous）；
+   - **免登与隔离双保**：既保证沙箱内部的登录态永久跨会话保留、永不掉登，又杜绝污染用户日常物理 Chrome 的主配置。
+
+---
+
 ## 六、 时间盒连续自治深研守则（Time-Boxed Continuous Autonomous Research）
 
 1. **定时器本质重构（时间盒是自治跑道，绝非静止闹钟）**：
