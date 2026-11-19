@@ -115,10 +115,10 @@
    - 严禁触碰任何涉及用户个人财务支付、敏感账号密码重置、未授权修改个人隐私数据等破坏性操作。
 3. **结果透明与溯源 (Auditability & Transparency)**：
    - 协同任务产出应在审查报告、阶段总结或日志中清晰列明所调用外部工具的检索线索、会话引用与关键技术洞察。
-4. **账号登录与已认证平台强制复用宿主 Chrome 准则 (Host Authenticated Chrome First Invariant)**：
-   - **严禁用空白沙箱替代登录会话**：凡是任务涉及需要用户账号凭据、登录状态、私域关注流、个性化推荐或需鉴权搜索的场景（包括但不限于 Twitter/X、GitHub 私域、微信公众平台、小红书、各类论坛与后台系统），**严禁调用隔离的内置 Browser 沙箱（WebView2）**，彻底杜绝遭遇登录墙中断；
-   - **强制接管宿主 Chrome 实例**：必须自动读取 `%LOCALAPPDATA%\Google\Chrome\User Data\DevToolsActivePort` 中的安全路由（或通过 CDP 9222 端口 / `--autoConnect` 参数），直连用户正在运行的 Chrome 实例，无缝复用已登录会话；
-   - **沙箱边界限定**：内置独立 WebView 沙箱仅允许用于完全公开、免登录的静态外链测试、无状态前端页面渲染与轻量纯公开抓取。
+4. **自动化沙箱独立持久化 Profile 优先准则 (Persistent Sandbox Profile First Invariant)**：
+   - **主配置永久托管与自动热注入**：将用户在沙箱环境中完成认证的 Cookies 与 Storage 永久存储于 `C:\Users\Administrator\.gemini\browser_profiles\master_authenticated_profile`；执行浏览器自动化或启动全新沙箱时，自动调用 `C:\Users\Administrator\.gemini\config\scripts\sync_browser_profile.py` 脚本，将主凭据（如知网、Google 等）无缝热注入至活跃沙箱分区，实现跨会话全自动免密登录；
+   - **严禁擅自接管日常物理 Chrome（彻底阻断远程调试弹窗扰民）**：凡是任务涉及网页浏览、学术检索、已登录平台与各类网页自动化，**默认且强制使用独立持久化沙箱**。严禁擅自读取 `DevToolsActivePort` 或主动直连 9222 调试端口，彻底杜绝触发 Chrome 顶部“允许远程调试”安全弹窗对用户的频繁干扰；
+   - **物理 Chrome 仅在显式强制要求时介入 (Explicit User Directive Only)**：除非用户在当前提示中明确发出“必须使用我正在用的物理桌面 Chrome 窗口”等直接指令，否则一律严禁触碰宿主日常 Chrome 进程与 9222 端口，确保所有操作在后台独立持久化沙箱中静默、极速闭环。
 
 
 # 本地服务与浏览器防抢锁准则 (Local Services & Browser Lock Prevention Guidelines)

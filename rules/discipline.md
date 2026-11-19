@@ -101,19 +101,10 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
    - 凡是在对话中出现“帮我下载”、“下载这个链接/文件/网盘”、发送网盘分享链接（如 `pan.quark.cn`、`pan.baidu.com`、`yun.baidu.com`、`alipan.com`、`123pan.com`、`115.com`、迅雷等）或直链/磁力时，即便用户未显式输入 `/xiazai`，智能体必须**强制自动激活 `xiazai` 技能**；
    - 严格执行双轨调度：小文件/直链通过后台常驻 Aria2（端口 `6800`）高速直推至 `D:\Downloads`，大文件（>1GB）或云端风控文件自动探测并接管本地客户端（如 `D:\Quark\quark.exe`），彻底阻断网页端无效重定向与死循环。
 
-8. **账号登录与已认证平台强制复用宿主 Chrome（Host Authenticated Chrome First Invariant）**：
-   - **严禁用空白沙箱替代登录会话**：凡是任务涉及需要用户账号凭据、登录状态、私域关注流、个性化推荐或需鉴权搜索的场景（包括但不限于 Twitter/X、GitHub 私域、微信公众平台、小红书、各类论坛与后台系统），**严禁调用隔离的内置 Browser 沙箱（WebView2）**，彻底杜绝遭遇登录墙中断；
-   - **强制接管宿主 Chrome 实例**：必须自动读取 `%LOCALAPPDATA%\Google\Chrome\User Data\DevToolsActivePort` 中的安全路由（或通过 CDP 9222 端口 / `--autoConnect` 参数），直连用户正在运行的 Chrome 实例，无缝复用已登录会话；
-   - **沙箱边界限定**：内置独立 WebView 沙箱仅允许用于完全公开、免登录的静态外链测试、无状态前端页面渲染与轻量纯公开抓取。
-
-
-
----
-
-9. **自动化沙箱独立持久化 Profile 机制 (Isolated Persistent Browser Sandbox Profile Invariant)**：
-   - **主配置永久归档**：将用户在内置沙箱环境中完成认证的 Cookies 与 Storage 永久存储于 C:\Users\Administrator\.gemini\browser_profiles\master_authenticated_profile，杜绝跨会话自动销毁；
-   - **多分区自动热注入**：在启动全新沙箱或跨会话执行浏览器自动化时，自动调用 C:\Users\Administrator\.gemini\config\scripts\sync_browser_profile.py 脚本，将主凭据（如知网、Google 凭据）无缝热注入至当前活跃分区（如 hub-browser-09f95a4c、hub-browser-anonymous）；
-   - **免登与隔离双保**：既保证沙箱内部的登录态永久跨会话保留、永不掉登，又杜绝污染用户日常物理 Chrome 的主配置。
+8. **自动化沙箱独立持久化 Profile 优先准则 (Persistent Sandbox Profile First Invariant)**：
+   - **主配置永久托管与自动热注入**：将用户在沙箱环境中完成认证的 Cookies 与 Storage 永久存储于 `C:\Users\Administrator\.gemini\browser_profiles\master_authenticated_profile`；执行浏览器自动化或启动全新沙箱时，自动调用 `C:\Users\Administrator\.gemini\config\scripts\sync_browser_profile.py` 脚本，将主凭据（如知网、Google 等）无缝热注入至活跃沙箱分区，实现跨会话全自动免密登录；
+   - **严禁擅自接管日常物理 Chrome（彻底阻断远程调试弹窗扰民）**：凡是任务涉及网页浏览、学术检索、已登录平台与各类网页自动化，**默认且强制使用独立持久化沙箱**。严禁擅自读取 `DevToolsActivePort` 或主动直连 9222 调试端口，彻底杜绝触发 Chrome 顶部“允许远程调试”安全弹窗对用户的频繁干扰；
+   - **物理 Chrome 仅在显式强制要求时介入 (Explicit User Directive Only)**：除非用户在当前提示中明确发出“必须使用我正在用的物理桌面 Chrome 窗口”等直接指令，否则一律严禁触碰宿主日常 Chrome 进程与 9222 端口，确保所有操作在后台独立持久化沙箱中静默、极速闭环。
 
 ---
 
