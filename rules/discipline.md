@@ -101,6 +101,10 @@ description: 智能体纪律守则：极简回答只说重点、敢于直言进�
    - 凡是在对话中出现“帮我下载”、“下载这个链接/文件/网盘”、发送网盘分享链接（如 `pan.quark.cn`、`pan.baidu.com`、`yun.baidu.com`、`alipan.com`、`123pan.com`、`115.com`、迅雷等）或直链/磁力时，即便用户未显式输入 `/xiazai`，智能体必须**强制自动激活 `xiazai` 技能**；
    - 严格执行双轨调度：小文件/直链通过后台常驻 Aria2（端口 `6800`）高速直推至 `D:\Downloads`，大文件（>1GB）或云端风控文件自动探测并接管本地客户端（如 `D:\Quark\quark.exe`），彻底阻断网页端无效重定向与死循环。
 
+8. **账号登录与已认证平台强制复用宿主 Chrome（Host Authenticated Chrome First Invariant）**：
+   - **严禁用空白沙箱替代登录会话**：凡是任务涉及需要用户账号凭据、登录状态、私域关注流、个性化推荐或需鉴权搜索的场景（包括但不限于 Twitter/X、GitHub 私域、微信公众平台、小红书、各类论坛与后台系统），**严禁调用隔离的内置 Browser 沙箱（WebView2）**，彻底杜绝遭遇登录墙中断；
+   - **强制接管宿主 Chrome 实例**：必须自动读取 `%LOCALAPPDATA%\Google\Chrome\User Data\DevToolsActivePort` 中的安全路由（或通过 CDP 9222 端口 / `--autoConnect` 参数），直连用户正在运行的 Chrome 实例，无缝复用已登录会话；
+   - **沙箱边界限定**：内置独立 WebView 沙箱仅允许用于完全公开、免登录的静态外链测试、无状态前端页面渲染与轻量纯公开抓取。
 
 
 

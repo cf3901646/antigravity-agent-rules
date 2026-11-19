@@ -115,6 +115,10 @@
    - 严禁触碰任何涉及用户个人财务支付、敏感账号密码重置、未授权修改个人隐私数据等破坏性操作。
 3. **结果透明与溯源 (Auditability & Transparency)**：
    - 协同任务产出应在审查报告、阶段总结或日志中清晰列明所调用外部工具的检索线索、会话引用与关键技术洞察。
+4. **账号登录与已认证平台强制复用宿主 Chrome 准则 (Host Authenticated Chrome First Invariant)**：
+   - **严禁用空白沙箱替代登录会话**：凡是任务涉及需要用户账号凭据、登录状态、私域关注流、个性化推荐或需鉴权搜索的场景（包括但不限于 Twitter/X、GitHub 私域、微信公众平台、小红书、各类论坛与后台系统），**严禁调用隔离的内置 Browser 沙箱（WebView2）**，彻底杜绝遭遇登录墙中断；
+   - **强制接管宿主 Chrome 实例**：必须自动读取 `%LOCALAPPDATA%\Google\Chrome\User Data\DevToolsActivePort` 中的安全路由（或通过 CDP 9222 端口 / `--autoConnect` 参数），直连用户正在运行的 Chrome 实例，无缝复用已登录会话；
+   - **沙箱边界限定**：内置独立 WebView 沙箱仅允许用于完全公开、免登录的静态外链测试、无状态前端页面渲染与轻量纯公开抓取。
 
 
 # 本地服务与浏览器防抢锁准则 (Local Services & Browser Lock Prevention Guidelines)
